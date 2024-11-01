@@ -45,7 +45,6 @@ output_data solve(input_data const& test) {
 	
 }
 
-
 int main() {
 #ifdef LOCAL
 	auto start_time = clock();
@@ -79,7 +78,25 @@ int main() {
 		for (int i = 0; i < test_count; ++i) {
 			if (!ready.count(i) && results[i].wait_for(0.1s) == future_status::ready) {
 				ready.insert(i);
-				cerr << (test_count - szof(ready)) << "/" << test_count << " tests are left (" << "test #" << i + 1 << " is ready)" << endl;
+				
+				cerr << (test_count - szof(ready)) << "/" << test_count << " tests";
+
+				if (test_count - szof(ready) <= 10 && szof(ready) < test_count) {
+					cerr << " (";
+					bool fl = false;
+					for (int j = 0; j < test_count; ++j) {
+						if (!ready.count(j)) {
+							if (fl) {
+								cerr << ", ";
+							}
+							fl = true;
+							cerr << "#" << j + 1;
+						}
+					}
+					cerr << ")";
+				}
+
+				cerr << " are left (" << "test #" << i + 1 << " is ready)" << endl;
 			}
 		}
 	} while (szof(ready) < test_count);
